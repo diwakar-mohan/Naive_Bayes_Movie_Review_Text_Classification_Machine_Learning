@@ -9,6 +9,7 @@ import sys
 import pickle
 
 tokenizer = RegexpTokenizer(r'\w+')
+#stores the frequency of the words in the review
 def getWordFreq(review,wordfreq,isStemmedData):
     if not isStemmedData:
         raw = review.lower()
@@ -27,6 +28,7 @@ def getWordFreq(review,wordfreq,isStemmedData):
 
     wordfreq[key] += word_count
 
+#stores the frequency of the words in the review using the best algorithm so far
 def getWordFreqBest(review,wordfreq,isStemmedData):
     if not isStemmedData:
         raw = review.lower()
@@ -45,7 +47,8 @@ def getWordFreqBest(review,wordfreq,isStemmedData):
         wordfreq[word] += 1
 
     wordfreq[key] += word_count
-    
+
+#determines the rating of the review. Uses logs to avoid underflow.    
 def getRating(review, catagory, vocab_len,num_cat, totalExamples,isStemmedData):
     if not isStemmedData:
         raw = review.lower()
@@ -70,6 +73,7 @@ def getRating(review, catagory, vocab_len,num_cat, totalExamples,isStemmedData):
         prob = np.log(num_cat) + logthetaK - np.log(totalExamples)
     return prob
 
+# determines the rating of the review using the best algorithm so far
 def getRatingBest(review, catagory, vocab_len,num_cat, totalExamples,isStemmedData):
     if not isStemmedData:
         raw = review.lower()
@@ -97,6 +101,7 @@ def getRatingBest(review, catagory, vocab_len,num_cat, totalExamples,isStemmedDa
         prob = np.log(num_cat) + logthetaK - np.log(totalExamples)
     return prob
 
+# determines the accuracy for RANDOM CATEGORIZATION algorithm
 def getRandomAccuracy(test_text_file,test_label_file):
     match_random = 0
     count_random = 0
@@ -113,7 +118,8 @@ def getRandomAccuracy(test_text_file,test_label_file):
 
     accuracy = (match_random * 100.0) / count_random
     return accuracy
-    
+
+# determines the accuracy for MAJORITY CATEGORIZATION algorithm    
 def getMaxAccuracy(test_text_file,test_label_file,ratings):
     predict_class = np.argmax(ratings) + 1
     match_max = 0
@@ -128,6 +134,7 @@ def getMaxAccuracy(test_text_file,test_label_file,ratings):
     accuracy = (match_max * 100.0) / count_max
     return accuracy
 
+# Trains the model
 def trainModel(train_text_file,train_label_file,isStemmedData):
     dict_list = [Counter() for x in range(10)]
     ratings = [0 for x in range(10)]
@@ -149,6 +156,7 @@ def trainModel(train_text_file,train_label_file,isStemmedData):
 
     return dict_list,ratings,labels,vlen,m
 
+# trains the model using best algorithm so far (part (e))
 def trainModelBest(train_text_file,train_label_file,isStemmedData):
     dict_list = [Counter() for x in range(10)]
     ratings = [0 for x in range(10)]
@@ -170,6 +178,7 @@ def trainModelBest(train_text_file,train_label_file,isStemmedData):
 
     return dict_list,ratings,labels,vlen,m
 
+# determines the training accuracy
 def predictTrainAccuracy(train_text_file,dict_list,ratings,labels,vlen,m,isStemmed):
     match_train = 0
     count_train = 0
@@ -187,6 +196,7 @@ def predictTrainAccuracy(train_text_file,dict_list,ratings,labels,vlen,m,isStemm
     accuracy = (match_train * 100.0) / count_train
     return accuracy
 
+# determines the training accuracy using best algorithm so far
 def predictTrainAccuracyBest(train_text_file,dict_list,ratings,labels,vlen,m,isStemmed):
     match_train = 0
     count_train = 0
@@ -204,6 +214,7 @@ def predictTrainAccuracyBest(train_text_file,dict_list,ratings,labels,vlen,m,isS
     accuracy = (match_train * 100.0) / count_train
     return accuracy
 
+# determines the test accuracy
 def predictTestAccuracy(test_text_file,test_label_file,dict_list,ratings,vlen,m,isStemmed,outfile):
     is_out_file = False
     if outfile != '':
@@ -244,6 +255,7 @@ def predictTestAccuracy(test_text_file,test_label_file,dict_list,ratings,vlen,m,
         
     return accuracy, confusion_matrix
 
+# determines the test accuracy using best algorithm so far
 def predictTestAccuracyBest(test_text_file,test_label_file,dict_list,ratings,vlen,m,isStemmed,outfile):
     is_out_file = False
     if outfile != '':
